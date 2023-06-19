@@ -6,6 +6,11 @@ require('dotenv').config();
 
 
 
+// IMPORT ROUTES 
+const authRoutes = require('./routes/authRoutes');
+
+
+
 // IMPORT DATABSE
 require('./database/db');
 
@@ -23,6 +28,11 @@ app.use(bodyParser.urlencoded({ extended: false, limit:'50mb' }))
 app.use(bodyParser.json())
 
 
+
+
+
+// END POINT ROUTES - ROUTES MIDDLEWARE
+app.use('/api', authRoutes)
 
 
 

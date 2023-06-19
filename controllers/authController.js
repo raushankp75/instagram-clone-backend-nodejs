@@ -1,8 +1,6 @@
 const User = require('../models/userModel');
 require('dotenv').config();
-const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
-
 
 
 const signup = async (req, res) => {
@@ -19,9 +17,9 @@ const signup = async (req, res) => {
     // if user has same email
     // User.findOne({ $or: [{email: email}, {userName: userName}] })
     User.findOne({ email: email })
-        .then(async (createdUser) => {
-            console.log(createdUser)
-            if (createdUser) {
+        .then(async (savedUser) => {
+            console.log(savedUser)
+            if (savedUser) {
                 return res.status(422).json({ error: 'User already exist with this email.' })
             }
 
