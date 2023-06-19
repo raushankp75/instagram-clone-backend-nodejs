@@ -4,11 +4,12 @@ const router = express.Router();
 
 
 // import controller
-const { signup } = require('../controllers/authController')
+const { signup, signin } = require('../controllers/authController')
 
 
 
 // auth routes - // /api/
 router.post('/signup', signup);
+router.post('/signin', signin);
 
 module.exports = router;
