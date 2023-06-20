@@ -56,18 +56,18 @@ const signup = async (req, res) => {
 
     const { name, email, password, role } = req.body;
 
-    // if these not available
+    // validation
     if (!name || !email || !password) {
         return res.status(422).json({ error: 'Please add all the fields' })
     }
 
-    // if user has same email
-    const savedUser = await User.findOne({ email: email });
-    if (savedUser) {
-        return res.status(422).json({ error: 'User already exist with this email.' })
-    }
-
     try {
+        // if user has same email
+        const savedUser = await User.findOne({ email: email });
+        if (savedUser) {
+            return res.status(400).json({ error: 'User already exist with this email.' })
+        }
+
         // hashing password before saving in db
         // await bcrypt.compare(password, User.hashedPassword);
         const hashedPassword = await bcrypt.hash(req.body.password, 10);
@@ -96,45 +96,95 @@ const signup = async (req, res) => {
 
 
 const signin = async (req, res) => {
+    // const { email, password } = req.body;
+
+    // //    Validation
+    // if (!email) {
+    //     return res.status(403).json({ error: 'Please enter email' });
+    // }
+    // if (!password) {
+    //     return res.status(403).json({ error: 'Please enter password' });
+    // }
+
+    // // checking for email is available or not in DB
+    // User.findOne({ email: email })
+    //     .then((savedUser) => {
+    //         if (!savedUser) {
+    //             return res.status(422).json({ error: 'Invalid email' })
+    //         }
+
+    //         // checking for password is available or not in DB
+    //         bcrypt.compare(password, savedUser.password)
+    //             .then((match) => {
+    //                 if (match) {
+
+    //                     // return res.status(200).json({message: 'Signin Successfully!'})
+
+    //                     // sending token to the user
+    //                     const token = jwt.sign({ _id: savedUser.id }, process.env.JWT_SECRET, { expiresIn: '2h' })
+    //                     // res.json(token);
+    //                     return res.status(200).json({
+    //                         success: true,
+    //                         message: 'Login successfully',
+    //                         token, role: savedUser.role,
+    //                         email: savedUser.email
+    //                     });
+    //                     // console.log(token);
+    //                 } else {
+    //                     return res.status(422).json({ error: 'Invalid password' })
+    //                 }
+    //             })
+    //             .catch((err) => {
+    //                 console.log(err)
+    //             })
+    //     })
+
+
+
+
+
+
+
+
     const { email, password } = req.body;
 
-    // if these not available
-    if (!email || !password) {
-        return res.status(422).json({ error: 'Please enter email and password' })
+
+    //    Validation
+    if (!email) {
+        return res.status(422).json({ error: 'Please enter email' });
+    }
+    if (!password) {
+        return res.status(422).json({ error: 'Please enter password' });
     }
 
-    // checking for email is available or not in DB
-    User.findOne({ email: email })
-        .then((savedUser) => {
-            if (!savedUser) {
-                return res.status(422).json({ error: 'Invalid email' })
-            }
+    try {
+        // checking for email is available or not in DB
+        const savedUser = await User.findOne({ email });
+        if (!savedUser) {
+            return res.status(400).json({ error: 'User is not registered with this email' })
+        }
+        // checking for password is available or not in DB
+        // console.log(savedUser.password)
+        const match = await bcrypt.compare(password, savedUser.password);
+        if (!match) {
+            return res.status(400).json({ error: 'Invalid credentials' })
+        } else {
+            // sending token to the user
+            const token = jwt.sign({ _id: savedUser.id }, process.env.JWT_SECRET, { expiresIn: '2h' })
+            return res.status(200).json({
+                success: true,
+                message: 'Login successfully',
+                token,
+                role: savedUser.role,
+                email: savedUser.email
+            });
+            // console.log(token);
+        }
 
-            // checking for password is available or not in DB
-            bcrypt.compare(password, savedUser.password)
-                .then((match) => {
-                    if (match) {
+    } catch (error) {
+        console.log(error)
+    }
 
-                        // return res.status(200).json({message: 'Signin Successfully!'})
-
-                        // sending token to the user
-                        const token = jwt.sign({ _id: savedUser.id }, process.env.JWT_SECRET, { expiresIn: '2h' })
-                        // res.json(token);
-                        return res.status(200).json({
-                            success: true,
-                            message: 'Login successfully',
-                            token, role: savedUser.role,
-                            email: savedUser.email
-                        });
-                        // console.log(token);
-                    } else {
-                        return res.status(422).json({ error: 'Invalid password' })
-                    }
-                })
-                .catch((err) => {
-                    console.log(err)
-                })
-        })
 }
 
 
