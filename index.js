@@ -8,6 +8,7 @@ require('dotenv').config();
 
 // IMPORT ROUTES 
 const authRoutes = require('./routes/authRoutes');
+const postRoutes = require('./routes/postRoutes');
 
 
 
@@ -33,6 +34,7 @@ app.use(bodyParser.json())
 
 // END POINT ROUTES - ROUTES MIDDLEWARE
 app.use('/api', authRoutes)
+app.use('/post', postRoutes)
 
 
 
