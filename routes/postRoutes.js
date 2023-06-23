@@ -13,7 +13,7 @@ const { isAuthenticated } = require('../middleware/loginAuthentication');
 
 
 // auth routes - // /post/
-router.post('/create', isAuthenticated, create);
+router.post('/create', create);
 
 
 module.exports = router;

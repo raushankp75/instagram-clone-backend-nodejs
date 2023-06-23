@@ -36,19 +36,23 @@ const create = async (req, res) => {
 
 
 
-    const { title, content } = req.body;
+    // const { title, content, pic } = req.body;
+    const { createPost, pic } = req.body;
 
-    if (!title) {
-        return res.status(422).json({ error: 'Please add title of your post' })
-    }
-    if (!content) {
-        return res.status(422).json({ error: 'Please add content of your post' })
+    console.log(createPost)
+    console.log(pic)
+    const { title, content } = createPost;
+    
+
+    if (!title || !content || !pic) {
+        return res.status(422).json({ error: 'Please add all the fields' })
     }
 
     try {
         const post = await Post.create({
             title,
             content,
+            image: pic,
             postedBy: req.user
         })
 
