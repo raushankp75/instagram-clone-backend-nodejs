@@ -42,7 +42,7 @@ const createPost = async (req, res) => {
     console.log(createPost)
     console.log(pic)
     const { title, content } = createPost;
-    
+
 
     if (!title || !content) {
         return res.status(422).json({ error: 'Please add all the fields' })
@@ -62,7 +62,7 @@ const createPost = async (req, res) => {
             message: 'Post created successfully',
             post
         })
-    } catch(error) {
+    } catch (error) {
         console.log(error)
     }
 }
@@ -83,4 +83,20 @@ const getAllPost = async (req, res) => {
 }
 
 
-module.exports = { createPost, getAllPost }
+// like get single post
+const getMyPost = async (req, res) => {
+    try {
+        const post = await Post.find({ postedBy: req.user._id }).populate('postedBy', '_id name')
+        res.status(200).json({
+            success: true,
+            message: 'My post fetched successfully',
+            post
+        })
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+
+
+module.exports = { createPost, getAllPost, getMyPost }
