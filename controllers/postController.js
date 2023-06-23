@@ -3,7 +3,7 @@ const Post = require('../models/postModel');
 require('dotenv').config();
 
 
-const create = async (req, res) => {
+const createPost = async (req, res) => {
     // //  console.log("Hello post create")
 
     // const { title, content } = req.body;
@@ -44,7 +44,7 @@ const create = async (req, res) => {
     const { title, content } = createPost;
     
 
-    if (!title || !content || !pic) {
+    if (!title || !content) {
         return res.status(422).json({ error: 'Please add all the fields' })
     }
 
@@ -68,4 +68,19 @@ const create = async (req, res) => {
 }
 
 
-module.exports = { create }
+
+const getAllPost = async (req, res) => {
+    try {
+        const posts = await Post.find().sort({ createdAt: -1 }).populate('postedBy', '_id name');
+        res.status(200).json({
+            success: true,
+            message: 'Post fetched successfully',
+            posts
+        })
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+
+module.exports = { createPost, getAllPost }
