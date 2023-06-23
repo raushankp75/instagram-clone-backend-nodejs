@@ -99,4 +99,44 @@ const getMyPost = async (req, res) => {
 
 
 
-module.exports = { createPost, getAllPost, getMyPost }
+// user id come from middleware authentication
+const like = async (req, res) => {
+    try {
+        const like = await Post.findByIdAndUpdate(req.body.postId, {
+            $push: { likes: req.user._id }
+        }, {
+            new: true
+        })
+        res.status(200).json({
+            success: true,
+            message: 'Like successfully',
+            like
+        })
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+
+
+const unLike = async (req, res) => {
+    try {
+        const like = await Post.findByIdAndUpdate(req.body.postId, {
+            $pull: { likes: req.user._id }
+        }, {
+            new: true
+        })
+        res.status(200).json({
+            success: true,
+            message: 'Like successfully',
+            like
+        })
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+
+
+
+module.exports = { createPost, getAllPost, getMyPost, like, unLike }
