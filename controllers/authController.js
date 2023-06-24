@@ -171,12 +171,15 @@ const signin = async (req, res) => {
         } else {
             // sending token to the user
             const token = jwt.sign({ _id: savedUser.id }, process.env.JWT_SECRET, { expiresIn: '2h' })
+            const {_id, name, email} = savedUser
+            console.log({token,user: {_id, name, email}})
             return res.status(200).json({
                 success: true,
                 message: 'Login successfully',
                 token,
                 role: savedUser.role,
-                email: savedUser.email
+                user: {_id, name, email}
+                // email: savedUser.email
             });
             // console.log(token);
         }

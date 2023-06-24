@@ -102,15 +102,16 @@ const getMyPost = async (req, res) => {
 // user id come from middleware authentication
 const like = async (req, res) => {
     try {
-        const like = await Post.findByIdAndUpdate(req.body.postId, {
+        const result = await Post.findByIdAndUpdate(req.body.postId, {
             $push: { likes: req.user._id }
         }, {
             new: true
         })
         res.status(200).json({
-            success: true,
-            message: 'Like successfully',
-            like
+            // success: true,
+            // message: 'Like successfully',
+            // like
+            // result: req.user._id
         })
     } catch (error) {
         console.log(error)
@@ -121,20 +122,60 @@ const like = async (req, res) => {
 
 const unLike = async (req, res) => {
     try {
-        const like = await Post.findByIdAndUpdate(req.body.postId, {
+        const result = await Post.findByIdAndUpdate(req.body.postId, {
             $pull: { likes: req.user._id }
         }, {
             new: true
         })
         res.status(200).json({
-            success: true,
-            message: 'Like successfully',
-            like
+            // success: true,
+            // message: 'Like successfully',
+            // like
+            // result: req.user._id
+            
+
         })
     } catch (error) {
         console.log(error)
     }
 }
+
+
+
+
+
+// const like = async (req, res) => {
+//     Post.findByIdAndUpdate(req.body.postId, {
+//         $push: { likes: req.user._id }
+//     }, {
+//         new: true
+//     }).populate("postedBy", "_id name image")
+//         .exec((err, result) => {
+//             if (err) {
+//                 return res.status(422).json({ error: err })
+//             } else {
+//                 res.json(result)
+//             }
+//         })
+// }
+
+
+
+// const unLike = async (req, res) => {
+//     Post.findByIdAndUpdate(req.body.postId, {
+//         $pull: { likes: req.user._id }
+//     }, {
+//         new: true
+//     }).populate("postedBy", "_id name image")
+//         .exec((err, result) => {
+//             if (err) {
+//                 return res.status(422).json({ error: err })
+//             } else {
+//                 res.json(result)
+//             }
+//         })
+
+// }
 
 
 
