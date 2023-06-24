@@ -132,7 +132,7 @@ const unLike = async (req, res) => {
             // message: 'Like successfully',
             // like
             // result: req.user._id
-            
+
 
         })
     } catch (error) {
@@ -180,4 +180,62 @@ const unLike = async (req, res) => {
 
 
 
-module.exports = { createPost, getAllPost, getMyPost, like, unLike }
+const addComment = async (req, res) => {
+    const { text } = req.body;
+
+    if(!text){
+        return res.status(422).json({ error: 'Please write your comment' })
+    }
+
+    console.log(req.body, 192)
+    try {
+        const postComment = await Post.findByIdAndUpdate(req.params.id, {
+            $push: { comments: { text, postedBy: req.user._id } }
+        },
+            { new: true }
+        ).populate('comments.postedBy', '_id name')
+        res.status(200).json({
+            success: true,
+            message: 'Comment added successfully',
+            postComment
+        })
+
+    } catch (error) {
+        console.log(error)
+    }
+
+}
+
+
+
+
+
+// const addComment = async (req, res) => {
+//     const comment = {
+//         // comment: req.body.text,
+//         text,
+//         postedBy: req.user._id
+//     }
+
+//     console.log(req.body, 192)
+//     try {
+//         const postComment = await Post.findByIdAndUpdate(req.body.postId, {
+//             $push: { comments: { comment } }
+//         },
+//             { new: true }
+//         )
+//         res.status(200).json({
+//             success: true,
+//             message: 'Comment added successfully',
+//             postComment
+//         })
+
+//     } catch (error) {
+//         console.log(error)
+//     }
+// }
+
+
+
+
+module.exports = { createPost, getAllPost, getMyPost, like, unLike, addComment }
