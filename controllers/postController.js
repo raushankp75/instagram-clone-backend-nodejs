@@ -86,7 +86,7 @@ const getAllPost = async (req, res) => {
 // like get single post
 const getMyPost = async (req, res) => {
     try {
-        const post = await Post.find({ postedBy: req.user._id }).populate('postedBy', '_id name')
+        const post = await Post.find({ postedBy: req.user._id }).populate("postedBy", "_id name").populate("comments.postedBy", "_id name")
         res.status(200).json({
             success: true,
             message: 'My post fetched successfully',
@@ -238,4 +238,25 @@ const addComment = async (req, res) => {
 
 
 
-module.exports = { createPost, getAllPost, getMyPost, like, unLike, addComment }
+const deletePost = async (req, res) => {
+    try {
+        const post = await Post.findByIdAndRemove(req.params.id).populate('postedBy', '_id');
+
+        if(!post){
+            return res.status(422).json({ error: 'Post not found' })
+        }
+        res.status(200).json({
+            success: true,
+            message: "post deleted"
+        })
+        console.log(post)
+        
+    } catch (error) {
+       console.log(error)
+    }
+}
+
+
+
+
+module.exports = { createPost, getAllPost, getMyPost, like, unLike, addComment, deletePost }
