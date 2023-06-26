@@ -16,10 +16,6 @@ const postSchema = new mongoose.Schema({
         // default: "no photo"
         require: true
     },
-    postedBy: {
-        type: ObjectId,
-        ref: 'User'
-    },
     likes: [
         {
             type: ObjectId,
@@ -38,7 +34,11 @@ const postSchema = new mongoose.Schema({
                 ref: 'User'
             }
         }
-    ]
+    ],
+    postedBy: {
+        type: ObjectId,
+        ref: 'User'
+    }
 
 }, { timestamps: true })
 

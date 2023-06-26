@@ -71,7 +71,7 @@ const createPost = async (req, res) => {
 
 const getAllPost = async (req, res) => {
     try {
-        const posts = await Post.find().sort({ createdAt: -1 }).populate('postedBy', '_id name');
+        const posts = await Post.find().sort({ createdAt: -1 }).populate('postedBy comments.postedBy', '_id name');
         res.status(200).json({
             success: true,
             message: 'Post fetched successfully',
@@ -189,15 +189,15 @@ const addComment = async (req, res) => {
 
     console.log(req.body, 192)
     try {
-        const postComment = await Post.findByIdAndUpdate(req.params.id, {
+        const post = await Post.findByIdAndUpdate(req.params.id, {
             $push: { comments: { text, postedBy: req.user._id } }
         },
             { new: true }
-        ).populate('comments.postedBy', '_id name')
+        ).populate("comments.postedBy", "_id name").populate("postedBy", "_id name")
         res.status(200).json({
             success: true,
             message: 'Comment added successfully',
-            postComment
+            post
         })
 
     } catch (error) {
