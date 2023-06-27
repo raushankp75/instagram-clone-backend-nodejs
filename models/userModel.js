@@ -24,6 +24,9 @@ const userSchema = new mongoose.Schema({
         required: [true, 'Password is required'],
         minlength: [3, 'Password must have at least 3 character']
     },
+    image: {
+        type: String
+    },
     followers: [
         {
             type: ObjectId,
