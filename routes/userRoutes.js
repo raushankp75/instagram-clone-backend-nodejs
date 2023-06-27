@@ -4,7 +4,7 @@ const router = express.Router();
 
 
 // import controller
-const { getSingleUser, follow, unfollow } = require('../controllers/userController');
+const { getSingleUser, follow, unfollow, profilePicture } = require('../controllers/userController');
 
 
 
@@ -17,5 +17,6 @@ const { isAuthenticated } = require('../middleware/loginAuthentication');
 router.get('/:id', getSingleUser);
 router.put('/follow', isAuthenticated, follow);
 router.put('/unfollow', isAuthenticated, unfollow);
+router.put('/profilepic', isAuthenticated, profilePicture);
 
 module.exports = router;

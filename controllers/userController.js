@@ -88,5 +88,41 @@ const unfollow = async (req, res) => {
 
 
 
+// const profilePic = async (req, res) => {
+//     try {
+//         const postImg = await User.findByIdAndUpdate(req.user._id, {
+//             $set: { image: req.body.pic }
+//         }, {
+//             new: true
+//         })
+//         res.status(200).json({
+//             success: true,
+//             message: 'Profile pic updated'
+//             postImg
+//         })
 
-module.exports = { getSingleUser, follow, unfollow }
+//     } catch (error) {
+//         console.log(error)
+//     }
+// }
+
+const profilePicture = async (req, res) => {
+    try {
+        const img = await User.findByIdAndUpdate(req.user._id, {
+            $set: { image: req.body.pic }
+        }, {
+            new: true
+        })
+
+        res.status(200).json({
+            success: true,
+            message: 'Profile pic updated',
+            img
+        })
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+
+module.exports = { getSingleUser, follow, unfollow, profilePicture }
