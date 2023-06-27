@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const { ObjectId } = mongoose.Schema.Types;
 
 const userSchema = new mongoose.Schema({
     name: {
@@ -23,6 +24,18 @@ const userSchema = new mongoose.Schema({
         required: [true, 'Password is required'],
         minlength: [3, 'Password must have at least 3 character']
     },
+    followers: [
+        {
+            type: ObjectId,
+            ref: 'User'
+        }
+    ],
+    following: [
+        {
+            type: ObjectId,
+            ref: 'User'
+        }
+    ],
     role: {
         type: String,
         enum: ['ADMIN', 'USER'],

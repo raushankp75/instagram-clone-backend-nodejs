@@ -4,10 +4,12 @@ const Post = require('../models/postModel');
 require('dotenv').config();
 
 
+
+// get user profile
 const getSingleUser = async (req, res) => {
     try {
         const user = await User.findById(req.params.id).select('-password');
-        if(!user){
+        if (!user) {
             return res.status(422).json({ error: 'User not found' })
         }
         const post = await Post.find({ postedBy: req.params.id }).populate('postedBy', '_id')
@@ -20,17 +22,71 @@ const getSingleUser = async (req, res) => {
     } catch (error) {
         console.log(error)
     }
-
-
-
-    // try {
-    //     const posts = await Post.find({postedBy: req.params._id});
-    //     res.status(200).send(posts);
-    //   }
-    //   catch (error) {
-    //     res.status(500).send({error: error.message});
-    //   }
 }
 
 
-module.exports = { getSingleUser }
+
+
+const follow = async (req, res) => {
+    try {
+        const followersResult = await User.findByIdAndUpdate(req.body.followId, {
+            $push: { followers: req.user._id }
+        }, {
+            new: true
+        })
+
+        if (!followersResult) {
+            return res.status(422).json({ error: 'Not found' })
+        }
+        const followingResult = await User.findByIdAndUpdate(req.user._id, {
+            $push: { following: req.body.followId }
+        }, {
+            new: true
+        })
+
+        res.status(200).json({
+            success: true,
+            message: 'Follow successfully',
+            followingResult
+        })
+
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+
+
+const unfollow = async (req, res) => {
+    try {
+        const followersResult = await User.findByIdAndUpdate(req.body.followId, {
+            $pull: { followers: req.user._id }
+        }, {
+            new: true
+        })
+
+        if (!followersResult) {
+            return res.status(422).json({ error: 'Not found' })
+        }
+        const followingResult = await User.findByIdAndUpdate(req.user._id, {
+            $pull: { following: req.body.followId }
+        }, {
+            new: true
+        })
+
+        res.status(200).json({
+            success: true,
+            message: 'Unfollow successfully',
+            followingResult
+        })
+
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+
+
+
+
+module.exports = { getSingleUser, follow, unfollow }
