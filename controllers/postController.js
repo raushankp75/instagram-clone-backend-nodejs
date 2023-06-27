@@ -257,6 +257,18 @@ const deletePost = async (req, res) => {
 }
 
 
+const myFollowingPost = async (req, res) => {
+    try {
+        const posts = await Post.find({postedBy: {$in:req.user.following}}).sort({ createdAt: -1 }).populate('postedBy comments.postedBy', '_id name');
+        res.status(200).json({
+            success: true,
+            message: 'Post fetched successfully',
+            posts
+        })
+    } catch (error) {
+        console.log(error)
+    }
+}
 
 
-module.exports = { createPost, getAllPost, getMyPost, like, unLike, addComment, deletePost }
+module.exports = { createPost, getAllPost, getMyPost, like, unLike, addComment, deletePost, myFollowingPost }

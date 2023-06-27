@@ -4,7 +4,7 @@ const router = express.Router();
 
 
 // import controller
-const { createPost, getAllPost, getMyPost, like, unLike, addComment, deletePost } = require('../controllers/postController');
+const { createPost, getAllPost, getMyPost, like, unLike, addComment, deletePost, myFollowingPost } = require('../controllers/postController');
 
 
 // import authentication middleware
@@ -20,6 +20,7 @@ router.put('/like', isAuthenticated, like);
 router.put('/unlike', isAuthenticated, unLike);
 router.put('/comment/:id', isAuthenticated, addComment);
 router.delete('/delete/:id', isAuthenticated, deletePost);
+router.get('/myfollowingpost', isAuthenticated, myFollowingPost);
 
 
 module.exports = router;
