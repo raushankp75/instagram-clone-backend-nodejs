@@ -171,14 +171,14 @@ const signin = async (req, res) => {
         } else {
             // sending token to the user
             const token = jwt.sign({ _id: savedUser.id }, process.env.JWT_SECRET, { expiresIn: '2h' })
-            const {_id, name, email} = savedUser
-            console.log({token,user: {_id, name, email}})
+            const { _id, name, email } = savedUser
+            console.log({ token, user: { _id, name, email } })
             return res.status(200).json({
                 success: true,
                 message: 'Login successfully',
                 token,
                 role: savedUser.role,
-                user: {_id, name, email}
+                user: { _id, name, email }
                 // email: savedUser.email
             });
             // console.log(token);
@@ -192,4 +192,68 @@ const signin = async (req, res) => {
 
 
 
-module.exports = { signup, signin }
+
+const loginWithGoogle = async (req, res) => {
+    const { email_verified, email, name, clientId, image } = req.body
+
+    if (email_verified) {
+        try {
+            // checking for email is available or not in DB
+            const savedUser = await User.findOne({ email });
+
+            if (savedUser) {
+                // sending token to the user
+                const token = jwt.sign({ _id: savedUser.id }, process.env.JWT_SECRET, { expiresIn: '2h' })
+                const { _id, name, email } = savedUser
+                console.log({ token, user: { _id, name, email } })
+                // return res.status(200).json({
+                //     success: true,
+                //     message: 'Login successfully',
+                //     token,
+                //     // role: savedUser.role,
+                //     user: { _id, name, email }
+                // });
+            } else {
+                const password = email + clientId
+
+                const user = await User.create({
+                    name,
+                    email,
+                    password: password,
+                    image,
+                    // role
+                })
+
+
+                // if success
+                let userId = user._id.toString()
+                const token = jwt.sign({ _id: userId }, process.env.JWT_SECRET, { expiresIn: '2h' })
+                const { _id, name, email } = user
+                console.log({ token, user: { _id, name, email } })
+                return res.status(200).json({
+                    success: true,
+                    message: 'Login successfully',
+                    token,
+                    // role: savedUser.role,
+                    user: { _id, name, email }
+                });
+
+
+                // // if success
+                // res.status(200).json({
+                //     success: true,
+                //     message: 'Signup Successfully!',
+                //     user
+
+                // })
+            }
+
+        } catch (error) {
+            console.log(error)
+        }
+    }
+}
+
+
+
+module.exports = { signup, signin, loginWithGoogle }
