@@ -71,7 +71,7 @@ const createPost = async (req, res) => {
 
 const getAllPost = async (req, res) => {
     try {
-        const posts = await Post.find().sort({ createdAt: -1 }).populate('postedBy comments.postedBy', '_id name');
+        const posts = await Post.find().populate('postedBy comments.postedBy', '_id name image').sort({ createdAt: -1 });
         res.status(200).json({
             success: true,
             message: 'Post fetched successfully',
@@ -86,7 +86,7 @@ const getAllPost = async (req, res) => {
 // like get single post
 const getMyPost = async (req, res) => {
     try {
-        const post = await Post.find({ postedBy: req.user._id }).populate("postedBy", "_id name").populate("comments.postedBy", "_id name")
+        const post = await Post.find({ postedBy: req.user._id }).populate("postedBy", "_id name").populate("comments.postedBy", "_id name image").sort({ createdAt: -1 });
         res.status(200).json({
             success: true,
             message: 'My post fetched successfully',
@@ -183,7 +183,7 @@ const unLike = async (req, res) => {
 const addComment = async (req, res) => {
     const { text } = req.body;
 
-    if(!text){
+    if (!text) {
         return res.status(422).json({ error: 'Please write your comment' })
     }
 
@@ -242,7 +242,7 @@ const deletePost = async (req, res) => {
     try {
         const post = await Post.findByIdAndRemove(req.params.id).populate('postedBy', '_id');
 
-        if(!post){
+        if (!post) {
             return res.status(422).json({ error: 'Post not found' })
         }
         res.status(200).json({
@@ -250,16 +250,16 @@ const deletePost = async (req, res) => {
             message: "post deleted"
         })
         console.log(post)
-        
+
     } catch (error) {
-       console.log(error)
+        console.log(error)
     }
 }
 
 
 const myFollowingPost = async (req, res) => {
     try {
-        const posts = await Post.find({postedBy: {$in:req.user.following}}).sort({ createdAt: -1 }).populate('postedBy comments.postedBy', '_id name');
+        const posts = await Post.find({ postedBy: { $in: req.user.following } }).sort({ createdAt: -1 }).populate('postedBy comments.postedBy', '_id name');
         res.status(200).json({
             success: true,
             message: 'Post fetched successfully',
