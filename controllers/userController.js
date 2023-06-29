@@ -12,7 +12,7 @@ const getSingleUser = async (req, res) => {
         if (!user) {
             return res.status(422).json({ error: 'User not found' })
         }
-        const post = await Post.find({ postedBy: req.params.id }).populate('postedBy', '_id')
+        const post = await Post.find({ postedBy: req.params.id }).populate('postedBy postedBy.comments', '_id name image')
         res.status(200).json({
             success: true,
             user,

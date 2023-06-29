@@ -193,7 +193,7 @@ const addComment = async (req, res) => {
             $push: { comments: { text, postedBy: req.user._id } }
         },
             { new: true }
-        ).populate("comments.postedBy", "_id name").populate("postedBy", "_id name")
+        ).populate("comments.postedBy", "_id name image").populate("postedBy", "_id name image")
         res.status(200).json({
             success: true,
             message: 'Comment added successfully',
