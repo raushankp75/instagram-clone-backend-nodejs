@@ -259,7 +259,7 @@ const deletePost = async (req, res) => {
 
 const myFollowingPost = async (req, res) => {
     try {
-        const posts = await Post.find({ postedBy: { $in: req.user.following } }).sort({ createdAt: -1 }).populate('postedBy comments.postedBy', '_id name');
+        const posts = await Post.find({ postedBy: { $in: req.user.following } }).sort({ createdAt: -1 }).populate('postedBy comments.postedBy', '_id name image');
         res.status(200).json({
             success: true,
             message: 'Post fetched successfully',
